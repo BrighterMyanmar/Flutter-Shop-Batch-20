@@ -5,6 +5,7 @@ import 'package:shop/models/Category.dart';
 import 'package:shop/utils/Cons.dart';
 
 class Api {
+
   static Future<bool> getCats() async {
     Uri uri = Uri.parse("${Cons.API_URL}/cats");
     var response = await http.get(uri);
@@ -20,4 +21,14 @@ class Api {
       return false;
     }
   }
+
+  static Future<bool> getCatProducts({id, page}) async {
+    Uri uri = Uri.parse("${Cons.API_URL}/catproducts/$id/$page");
+    var response = await http.get(uri);
+
+    var responseData = jsonDecode(response.body);
+    print(responseData);
+    return true;
+  }
+
 }

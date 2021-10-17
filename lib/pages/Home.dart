@@ -1,6 +1,7 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:shop/models/Category.dart';
+import 'package:shop/pages/ProductPage.dart';
 import 'package:shop/utils/Cons.dart';
 
 class Home extends StatefulWidget {
@@ -52,7 +53,10 @@ class _HomeState extends State<Home> {
   Widget _makeGridCard(Category cat) {
     return Container(
       child: Card(
-        child: Image.network(cat.image ?? ""),
+        child: InkWell(
+            onTap: () => Navigator.push(context,
+                MaterialPageRoute(builder: (context) => ProductPage(cat: cat))),
+            child: Image.network("${cat.image}")),
       ),
     );
   }
