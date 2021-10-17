@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shop/helpers/TrianglePainter.dart';
 import 'package:shop/pages/Home.dart';
 import 'package:shop/utils/Api.dart';
+import 'package:shop/utils/Cons.dart';
 
 class Flash extends StatefulWidget {
   const Flash({Key? key}) : super(key: key);
@@ -44,7 +45,7 @@ class _FlashState extends State<Flash> {
                 child: Text("Food Monkey",
                     style: TextStyle(
                         fontSize: 40,
-                        color: Colors.pink,
+                        color: Cons.normal,
                         fontFamily: "English",
                         fontWeight: FontWeight.bold)),
               ),
@@ -52,8 +53,8 @@ class _FlashState extends State<Flash> {
               Image.asset("assets/images/fm.png"),
               SizedBox(height: 40),
               CircularProgressIndicator(
-                color: Colors.amberAccent,
-                backgroundColor: Colors.pink,
+                color: Cons.accent,
+                backgroundColor: Cons.normal,
               )
             ],
           )

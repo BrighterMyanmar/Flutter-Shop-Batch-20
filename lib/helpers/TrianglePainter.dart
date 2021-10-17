@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shop/utils/Cons.dart';
 
 class TrianglePainter extends CustomPainter {
   var mSize;
@@ -9,7 +10,7 @@ class TrianglePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint();
-    paint.color = Colors.pink;
+    paint.color = Cons.secondary;
 
     var upPath = Path();
     upPath.moveTo(mSize.width / 3, 0);
