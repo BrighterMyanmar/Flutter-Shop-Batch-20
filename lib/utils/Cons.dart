@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shop/models/Category.dart';
+import 'package:shop/models/Tag.dart';
 
 class Cons {
   static const Color primary = Color(0xFFF6F6F6);
@@ -13,6 +14,7 @@ class Cons {
   static const String API_URL = "$BASE_URL/api";
 
   static List<Category>? cats;
+  static List<Tag>? tags;
 
   static List slideImages = ["1.png", "2.png", "3.png"];
 }

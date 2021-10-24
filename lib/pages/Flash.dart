@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shop/helpers/TrianglePainter.dart';
-import 'package:shop/pages/Home.dart';
 import 'package:shop/utils/Api.dart';
 import 'package:shop/utils/Cons.dart';
 
@@ -13,9 +12,9 @@ class Flash extends StatefulWidget {
 
 class _FlashState extends State<Flash> {
   _loadInitialData() async {
-    // await Future.delayed(Duration(seconds: 5));
     bool bol = await Api.getCats();
-    if (bol) {
+    bool tagBool = await Api.getTags();
+    if (bol && tagBool) {
       Navigator.pushReplacementNamed(context, "/home");
     } else {
       print("Data Loading Error!");

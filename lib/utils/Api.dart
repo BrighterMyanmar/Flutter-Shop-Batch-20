@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shop/models/Category.dart';
 import 'package:shop/models/Product.dart';
+import 'package:shop/models/Tag.dart';
 import 'package:shop/utils/Cons.dart';
 
 class Api {
@@ -32,5 +33,32 @@ class Api {
       products = lisy.map((e) => Product.fromJson(e)).toList();
     }
     return products;
+  }
+
+  static Future<List<Product>> getTagProducts({id, page}) async {
+    List<Product> products = [];
+    Uri uri = Uri.parse("${Cons.API_URL}/tagproducts/$id/$page");
+    var response = await http.get(uri);
+    var responseData = jsonDecode(response.body);
+    if (responseData["con"]) {
+      List lisy = responseData["result"] as List;
+      products = lisy.map((e) => Product.fromJson(e)).toList();
+    }
+    return products;
+  }
+
+  static Future<bool> getTags() async {
+    Uri uri = Uri.parse("${Cons.API_URL}/tags");
+    var response = await http.get(uri);
+
+    var responseData = jsonDecode(response.body);
+    if (responseData["con"]) {
+      List lisy = responseData["result"] as List;
+      Cons.tags = lisy.map((e) => Tag.fromJson(e)).toList();
+      return true;
+    } else {
+      print(responseData["msg"]);
+      return false;
+    }
   }
 }

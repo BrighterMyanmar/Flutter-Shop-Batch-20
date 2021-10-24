@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shop/models/Category.dart';
 import 'package:shop/models/Product.dart';
+import 'package:shop/models/Tag.dart';
 import 'package:shop/utils/Api.dart';
 import 'package:shop/utils/Cons.dart';
 
@@ -18,15 +19,34 @@ class _ProductPageState extends State<ProductPage> {
   int page = 1;
   List<Product> products = [];
 
+  // Loading
+  // When to Load
   _ProductPageState(this.cat);
 
   var _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  bool isLoading = false;
+  var _selectedIndex = 0;
+  var type = "category";
+
   _loadCatProducts() async {
-    List<Product> prods =
-        await Api.getCatProducts(id: cat?.id ?? 0, page: page);
+    setState(() {
+      isLoading = true;
+    });
+    // await Future.delayed(Duration(seconds: 5));
+    List<Product> prods = [];
+    if (type == "category") {
+      prods = await Api.getCatProducts(id: cat?.id ?? 0, page: page);
+    } else {
+      var tagId = Cons.tags?[_selectedIndex]?.id ?? 0;
+      prods = await Api.getTagProducts(id: tagId, page: page);
+    }
+
     products.addAll(prods);
-    setState(() {});
+    page++;
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -38,20 +58,74 @@ class _ProductPageState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(title: Text("${cat?.name}")),
         body: Column(
           children: [
-            Expanded(
-              child: GridView.builder(
-                  itemCount: products.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                  ),
+            Container(
+              height: 50,
+              child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: Cons.tags?.length,
                   itemBuilder: (context, index) =>
-                      _makeProductCard(products[index])),
-            )
+                      _makeNavTab(index, Cons.tags![index])),
+            ),
+            Expanded(
+              child: NotificationListener<ScrollNotification>(
+                  onNotification: (ScrollNotification scrollInfo) {
+                    if (!isLoading &&
+                        scrollInfo.metrics.pixels ==
+                            scrollInfo.metrics.maxScrollExtent) {
+                      _loadCatProducts();
+                    }
+                    return false;
+                  },
+                  child: GridView.builder(
+                      itemCount: products.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                      ),
+                      itemBuilder: (context, index) =>
+                          _makeProductCard(products[index]))),
+            ),
+            Container(child: isLoading ? CircularProgressIndicator() : null)
           ],
         ));
+  }
+
+  Widget _makeNavTab(index, Tag tag) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          InkWell(
+            onTap: () {
+              _selectedIndex = index;
+              type = "tags";
+              page = 1;
+              products = [];
+              setState(() {
+                _loadCatProducts();
+              });
+            },
+            child: Text("${tag.name}",
+                style: TextStyle(
+                    fontFamily: "English",
+                    fontWeight: FontWeight.bold,
+                    color: Cons.normal,
+                    fontSize: 18)),
+          ),
+          SizedBox(
+            height: 3,
+          ),
+          Container(
+            width: 50,
+            height: 5,
+            color: index == _selectedIndex ? Cons.accent : Colors.transparent,
+          )
+        ],
+      ),
+    );
   }
 
   Widget _makeProductCard(Product product) {
@@ -62,14 +136,14 @@ class _ProductPageState extends State<ProductPage> {
         child: Column(
           children: [
             SizedBox(height: 10),
-            Text("Burger With Beef",
+            Text("${product.name}",
                 style: TextStyle(
                     fontFamily: "English",
                     fontSize: 18,
                     color: Cons.normal,
                     fontWeight: FontWeight.bold)),
             SizedBox(height: 10),
-            Image.asset("assets/images/1.png",width:120),
+            Image.asset("assets/images/1.png", width: 120),
             // Image.network(
             //   "${product.images![0]}",
             //   width: 130,
