@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shop/models/Category.dart';
 import 'package:shop/models/Product.dart';
 import 'package:shop/models/Tag.dart';
+import 'package:shop/pages/PreviewPage.dart';
 import 'package:shop/utils/Api.dart';
 import 'package:shop/utils/Cons.dart';
 
@@ -143,11 +144,11 @@ class _ProductPageState extends State<ProductPage> {
                     color: Cons.normal,
                     fontWeight: FontWeight.bold)),
             SizedBox(height: 10),
-            Image.asset("assets/images/1.png", width: 120),
-            // Image.network(
-            //   "${product.images![0]}",
-            //   width: 130,
-            // ),
+            // Image.asset("assets/images/1.png", width: 120),
+            Image.network(
+              "${product.images![0]}",
+              width: 130,
+            ),
             SizedBox(height: 7),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -163,8 +164,14 @@ class _ProductPageState extends State<ProductPage> {
                         fontFamily: "English",
                         color: Cons.normal,
                         fontWeight: FontWeight.bold)),
-                Icon(Icons.remove_red_eye_outlined,
-                    size: 30, color: Cons.accent)
+                InkWell(
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PreviewPage(product: product))),
+                  child: Icon(Icons.remove_red_eye_outlined,
+                      size: 30, color: Cons.accent),
+                )
               ],
             )
           ],
