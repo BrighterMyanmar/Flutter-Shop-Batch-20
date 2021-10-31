@@ -2,6 +2,7 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:shop/helpers/ArcPainter.dart';
 import 'package:shop/models/Product.dart';
+import 'package:shop/pages/Detail.dart';
 import 'package:shop/utils/Cons.dart';
 
 class PreviewPage extends StatefulWidget {
@@ -51,12 +52,12 @@ class _PreviewPageState extends State<PreviewPage> {
                 scale: 0.9,
               ),
             ),
-            _buildRichText(
-                "Price\n", "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t5500 Ks"),
-            _buildRichText("Size\n", "\t\t\t\t\t\t\t\t\t\tLarge Size"),
-            _buildRichText(
-                "Promo\n", "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tCoca Cola"),
-            SizedBox(height:20),
+            _buildRichText("Price\n",
+                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t${product.price} Ks"),
+            _buildRichText("Size\n", "\t\t\t\t\t\t\t\t\t\t${product.size}"),
+            _buildRichText("Promo\n",
+                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t${product.discount} Ks"),
+            SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -95,7 +96,10 @@ class _PreviewPageState extends State<PreviewPage> {
                       color: Cons.normal,
                       borderRadius: BorderRadius.all(Radius.circular(40))),
                   child: TextButton(
-                      onPressed: () {},
+                      onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Detail(product: product))),
                       child: Padding(
                         padding: const EdgeInsets.all(6.0),
                         child: Text("Detail...",
