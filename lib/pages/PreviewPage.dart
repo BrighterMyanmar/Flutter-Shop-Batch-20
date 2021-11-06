@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shop/helpers/ArcPainter.dart';
 import 'package:shop/models/Product.dart';
 import 'package:shop/pages/Detail.dart';
+import 'package:shop/utils/Components.dart';
 import 'package:shop/utils/Cons.dart';
 
 class PreviewPage extends StatefulWidget {
@@ -23,7 +24,15 @@ class _PreviewPageState extends State<PreviewPage> {
   Widget build(BuildContext context) {
     var mSize = MediaQuery.of(context).size;
     return Scaffold(
-        appBar: AppBar(title: Text("Product Preview")),
+        appBar: AppBar(
+          title: Text("Product Preview"),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Components.getShoppingCart(context),
+            )
+          ],
+        ),
         body: SingleChildScrollView(
             child: Stack(children: [
           CustomPaint(
@@ -73,20 +82,26 @@ class _PreviewPageState extends State<PreviewPage> {
                       //     padding: EdgeInsets.all(10)),
                       child: Padding(
                         padding: const EdgeInsets.all(6.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Icon(
-                              Icons.shopping_cart,
-                              size: 35,
-                              color: Cons.primary,
-                            ),
-                            Text("Buy Now",
-                                style: TextStyle(
-                                    fontSize: 25,
-                                    fontFamily: "English",
-                                    color: Cons.primary))
-                          ],
+                        child: InkWell(
+                          onTap: () {
+                            Components.addToCart(product);
+                            setState(() {});
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Icon(
+                                Icons.shopping_cart,
+                                size: 35,
+                                color: Cons.primary,
+                              ),
+                              Text("Buy Now",
+                                  style: TextStyle(
+                                      fontSize: 25,
+                                      fontFamily: "English",
+                                      color: Cons.primary))
+                            ],
+                          ),
                         ),
                       )),
                 ),

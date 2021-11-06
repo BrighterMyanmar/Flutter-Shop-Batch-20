@@ -8,6 +8,7 @@ class Product {
   bool? status;
   String? id, name, brand, size, desc, detail;
   double? rating;
+  int count = 1;
 
   Product(
       {this.images,

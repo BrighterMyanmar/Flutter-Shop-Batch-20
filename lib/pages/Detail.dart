@@ -2,6 +2,7 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shop/models/Product.dart';
+import 'package:shop/utils/Components.dart';
 import 'package:shop/utils/Cons.dart';
 
 class Detail extends StatefulWidget {
@@ -21,7 +22,15 @@ class _DetailState extends State<Detail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text("Product Detail")),
+        appBar: AppBar(
+          title: Text("Product Detail"),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Components.getShoppingCart(context),
+            )
+          ],
+        ),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -51,29 +60,12 @@ class _DetailState extends State<Detail> {
                             color: Cons.normal,
                             fontWeight: FontWeight.bold,
                             fontFamily: "English")),
-                    Stack(
-                      overflow: Overflow.visible,
-                      children: [
-                        Icon(Icons.shopping_cart, size: 45, color: Cons.accent),
-                        Positioned(
-                          right: 0,
-                          top: -10,
-                          child: Container(
-                            width: 25,
-                            height: 25,
-                            decoration: BoxDecoration(
-                                color: Cons.normal,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(25))),
-                            child: Center(
-                                child: Text("10".padLeft(2, "0"),
-                                    style: TextStyle(
-                                        fontFamily: "English",
-                                        color: Colors.white))),
-                          ),
-                        )
-                      ],
-                    )
+                    InkWell(
+                        onTap: () {
+                          Components.addToCart(product);
+                          setState(() {});
+                        },
+                        child: Components.getShoppingCart(context))
                   ],
                 ),
                 Row(
@@ -94,7 +86,7 @@ class _DetailState extends State<Detail> {
                       _makeTableTitleText("Values")
                     ]),
                     ...List.generate(product.features?.length ?? 0, (index) {
-                      var feature = product?.features?[index];
+                      var feature = product.features?[index];
                       var key = feature.keys.toList()[0];
                       return _makeTableRow(key, feature[key]);
                     })

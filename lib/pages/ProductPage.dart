@@ -4,6 +4,7 @@ import 'package:shop/models/Product.dart';
 import 'package:shop/models/Tag.dart';
 import 'package:shop/pages/PreviewPage.dart';
 import 'package:shop/utils/Api.dart';
+import 'package:shop/utils/Components.dart';
 import 'package:shop/utils/Cons.dart';
 
 class ProductPage extends StatefulWidget {
@@ -60,7 +61,15 @@ class _ProductPageState extends State<ProductPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-        appBar: AppBar(title: Text("${cat?.name}")),
+        appBar: AppBar(
+          title: Text("${cat?.name}"),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Components.getShoppingCart(context),
+            )
+          ],
+        ),
         body: Column(
           children: [
             Container(
@@ -153,10 +162,16 @@ class _ProductPageState extends State<ProductPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Icon(
-                  Icons.shopping_cart,
-                  color: Cons.accent,
-                  size: 30,
+                GestureDetector(
+                  onTap: () {
+                    Components.addToCart(product);
+                    setState(() {});
+                  },
+                  child: Icon(
+                    Icons.shopping_cart,
+                    color: Cons.accent,
+                    size: 30,
+                  ),
                 ),
                 Text("${product.price} Ks",
                     style: TextStyle(
