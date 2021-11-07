@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shop/models/Category.dart';
 import 'package:shop/models/Tag.dart';
+import 'package:shop/models/User.dart';
 
 class Cons {
   static const Color primary = Color(0xFFF6F6F6);
@@ -15,6 +16,7 @@ class Cons {
 
   static List<Category>? cats;
   static List<Tag>? tags;
+  static User? user;
 
   static List slideImages = ["1.png", "2.png", "3.png"];
 }

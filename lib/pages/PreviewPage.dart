@@ -29,7 +29,8 @@ class _PreviewPageState extends State<PreviewPage> {
           actions: [
             Padding(
               padding: const EdgeInsets.all(10.0),
-              child: Components.getShoppingCart(context),
+              child: Components.getShoppingCart(
+                  context, Components.cartProducts.length.toString()),
             )
           ],
         ),

@@ -27,7 +27,8 @@ class _DetailState extends State<Detail> {
           actions: [
             Padding(
               padding: const EdgeInsets.all(10.0),
-              child: Components.getShoppingCart(context),
+              child: Components.getShoppingCart(
+                  context, Components.cartProducts.length.toString()),
             )
           ],
         ),
@@ -65,7 +66,8 @@ class _DetailState extends State<Detail> {
                           Components.addToCart(product);
                           setState(() {});
                         },
-                        child: Components.getShoppingCart(context))
+                        child: Components.getShoppingCart(
+                            context, Components.cartProducts.length.toString()))
                   ],
                 ),
                 Row(

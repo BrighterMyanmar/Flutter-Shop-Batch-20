@@ -23,7 +23,48 @@ class Components {
     }
   }
 
-  static Widget getShoppingCart(context) {
+  static addProductCount(Product product) {
+    cartProducts.forEach((pro) {
+      if (pro.id == product.id) {
+        pro.count++;
+      }
+    });
+  }
+
+  static reduceProductCount(Product product) {
+    cartProducts.forEach((pro) {
+      if (pro.id == product.id) {
+        if (pro.count > 1) {
+          pro.count--;
+        }
+      }
+    });
+  }
+
+  static removeProduct(Product product) {
+    cartProducts.removeWhere((pro) => pro.id == product.id);
+  }
+
+  static int getProductTotal() {
+    int total = 0;
+    cartProducts.forEach((pro) {
+      total += (pro.price ?? 0) * pro.count;
+    });
+    return total;
+  }
+
+  static genOrderProducts() {
+    List<Map> cartList = [];
+    cartProducts.forEach((product) {
+      var map = new Map();
+      map["productId"] = product.id;
+      map["count"] = product.count;
+      cartList.add(map);
+    });
+    return cartList;
+  }
+
+  static Widget getShoppingCart(context, count) {
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -43,7 +84,7 @@ class Components {
                   color: Cons.normal,
                   borderRadius: BorderRadius.all(Radius.circular(25))),
               child: Center(
-                  child: Text(cartProducts.length.toString().padLeft(2, "0"),
+                  child: Text(count.padLeft(2, "0"),
                       style: TextStyle(
                           fontFamily: "English", color: Colors.white))),
             ),

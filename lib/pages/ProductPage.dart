@@ -66,7 +66,8 @@ class _ProductPageState extends State<ProductPage> {
           actions: [
             Padding(
               padding: const EdgeInsets.all(10.0),
-              child: Components.getShoppingCart(context),
+              child: Components.getShoppingCart(
+                  context, Components.cartProducts.length.toString()),
             )
           ],
         ),
