@@ -57,7 +57,7 @@ class Components {
     List<Map> cartList = [];
     cartProducts.forEach((product) {
       var map = new Map();
-      map["productId"] = product.id;
+      map["id"] = product.id;
       map["count"] = product.count;
       cartList.add(map);
     });

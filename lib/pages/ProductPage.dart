@@ -59,6 +59,7 @@ class _ProductPageState extends State<ProductPage> {
 
   @override
   Widget build(BuildContext context) {
+    _rebuildAllChildren(context);
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
@@ -194,5 +195,15 @@ class _ProductPageState extends State<ProductPage> {
         ),
       ),
     );
+  }
+
+  _rebuildAllChildren(BuildContext context) {
+    void rebuild(Element el) {
+      el.markNeedsBuild();
+      el.visitChildren(rebuild);
+    }
+
+    (context as Element).visitChildren(rebuild);
+    setState(() {});
   }
 }

@@ -18,5 +18,11 @@ class Cons {
   static List<Tag>? tags;
   static User? user;
 
+  static Map<String, String> header = {"content-type": "application/json"};
+  static Map<String, String> tokenHeader = {
+    "content-type": "application/json",
+    "authorization": "Bearer ${user?.token}"
+  };
+
   static List slideImages = ["1.png", "2.png", "3.png"];
 }

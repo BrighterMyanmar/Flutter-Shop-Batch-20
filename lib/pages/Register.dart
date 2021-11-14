@@ -2,30 +2,30 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:shop/helpers/TrianglePainter.dart';
-import 'package:shop/pages/Register.dart';
 import 'package:shop/utils/Api.dart';
 import 'package:shop/utils/Cons.dart';
 
-class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
+class Register extends StatefulWidget {
+  const Register({Key? key}) : super(key: key);
 
   @override
-  _LoginState createState() => _LoginState();
+  _RegisterState createState() => _RegisterState();
 }
 
-class _LoginState extends State<Login> {
+class _RegisterState extends State<Register> {
   var _formKey = GlobalKey<FormState>();
   var _phoneErrorText = "";
   var _isShow = true;
-
-  var _phoneController = TextEditingController(text: "09700700701");
+  var _nameController = TextEditingController(text: "Ba La");
+  var _emailController = TextEditingController(text: "bala@gmail.com");
+  var _phoneController = TextEditingController(text: "09100100100");
   var _passwordController = TextEditingController(text: "123123123");
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
-        appBar: AppBar(title: Text("Login")),
+        appBar: AppBar(title: Text("Register")),
         body: SingleChildScrollView(
           child: Stack(
             children: [
@@ -35,36 +35,49 @@ class _LoginState extends State<Login> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 20),
-                    Center(child: Image.asset("assets/images/fm.png")),
+                    Center(
+                        child: Image.asset("assets/images/fm.png", width: 130)),
                     Padding(
-                      padding: EdgeInsets.fromLTRB(20, 20, 0, 0),
-                      child: Text("Login",
+                      padding: EdgeInsets.fromLTRB(20, 5, 0, 0),
+                      child: Text("Register",
                           style: TextStyle(
                               fontSize: 40,
                               fontFamily: "English",
                               color: Cons.normal,
                               fontWeight: FontWeight.bold)),
                     ),
-                    SizedBox(height: 30),
+                    SizedBox(height: 20),
                     Form(
                         key: _formKey,
                         child: Column(
                           children: [
                             TextFormField(
+                              controller: _nameController,
+                              keyboardType: TextInputType.text,
+                              decoration: InputDecoration(
+                                  prefixIcon: Icon(Icons.phone),
+                                  errorText: _phoneErrorText,
+                                  labelText: "Name",
+                                  labelStyle: _getTextStyle(),
+                                  errorBorder: _getInputBorder(),
+                                  enabledBorder: _getInputBorder(),
+                                  focusedBorder: _getInputBorder()),
+                            ),
+                            TextFormField(
+                              controller: _emailController,
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: InputDecoration(
+                                  prefixIcon: Icon(Icons.phone),
+                                  errorText: _phoneErrorText,
+                                  labelText: "Email",
+                                  labelStyle: _getTextStyle(),
+                                  errorBorder: _getInputBorder(),
+                                  enabledBorder: _getInputBorder(),
+                                  focusedBorder: _getInputBorder()),
+                            ),
+                            TextFormField(
                               controller: _phoneController,
                               keyboardType: TextInputType.phone,
-                              // onChanged: (v) {
-                              //   if (v.isNotEmpty) {
-                              //     if (v.length < 11) {
-                              //       _phoneErrorText =
-                              //           "ဖုန်းနံပါတ် အများဆုံး ၁၁ လုံး ဖြစ်ရမယ်";
-                              //     } else {
-                              //       _phoneErrorText = "";
-                              //     }
-                              //     setState(() {});
-                              //   }
-                              // },
                               validator: (v) {
                                 if (v!.isEmpty) {
                                   return "ဖုန်းနံပါတ် မထည့်လို့ မရဘူး";
@@ -86,7 +99,6 @@ class _LoginState extends State<Login> {
                                   enabledBorder: _getInputBorder(),
                                   focusedBorder: _getInputBorder()),
                             ),
-                            SizedBox(height: 40),
                             TextFormField(
                               obscureText: _isShow,
                               controller: _passwordController,
@@ -117,21 +129,13 @@ class _LoginState extends State<Login> {
                               children: [
                                 Column(
                                   children: [
-                                    InkWell(
-                                      onTap: () => Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  Register())),
-                                      child: Text(
-                                          "Not a member yet!\n Register herer!",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              color: Cons.normal,
-                                              fontFamily: "English",
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold)),
-                                    ),
+                                    Text("Not a member yet!\n Register herer!",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Cons.normal,
+                                            fontFamily: "English",
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold)),
                                     SizedBox(height: 5),
                                     Container(
                                         width: 50,
@@ -142,15 +146,15 @@ class _LoginState extends State<Login> {
                                 TextButton(
                                     onPressed: () async {
                                       if (_formKey.currentState!.validate()) {
-                                        var phone = _phoneController.text;
-                                        var password = _passwordController.text;
-
                                         var json = jsonEncode({
-                                          "phone": phone,
-                                          "password": password
+                                          "name": _nameController.text,
+                                          "email": _emailController.text,
+                                          "phone": _phoneController.text,
+                                          "password": _passwordController.text
                                         });
                                         print(json);
-                                        bool bol = await Api.login(json: json);
+                                        bool bol =
+                                            await Api.register(json: json);
                                         if (bol) {
                                           Navigator.pop(context);
                                         }
@@ -164,7 +168,7 @@ class _LoginState extends State<Login> {
                                       children: [
                                         Icon(Icons.lock, color: Cons.primary),
                                         SizedBox(width: 15),
-                                        Text("Login",
+                                        Text("Register",
                                             style: TextStyle(
                                                 fontFamily: "English",
                                                 fontSize: 18,

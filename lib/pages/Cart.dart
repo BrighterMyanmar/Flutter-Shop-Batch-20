@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shop/models/Product.dart';
 import 'package:shop/pages/Login.dart';
+import 'package:shop/utils/Api.dart';
 import 'package:shop/utils/Components.dart';
 import 'package:shop/utils/Cons.dart';
 
@@ -16,62 +17,88 @@ class Cart extends StatefulWidget {
 class _CartState extends State<Cart> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: Text("Your Cart")),
-        body: Column(children: [
-          Expanded(
-              child: ListView.builder(
-                  itemCount: Components.cartProducts.length,
-                  itemBuilder: (context, index) =>
-                      _buildCartItem(Components.cartProducts[index]))),
-          Container(
-            height: 200,
-            decoration: BoxDecoration(
-                color: Cons.secondary,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(40),
-                    topRight: Radius.circular(40))),
-            child: Column(
-              children: [
-                SizedBox(height: 40),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Text("Sub Total", style: _getBigTextStyle(Cons.primary)),
-                    Text("${Components.getProductTotal()} Ks",
-                        style: _getBigTextStyle(Cons.normal))
-                  ],
-                ),
-                SizedBox(height: 30),
-                TextButton(
-                    onPressed: () {
-                      if (Cons.user == null) {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => Login()));
-                      } else {
-                        var items = Components.genOrderProducts();
-                        var json = jsonEncode({
-                          "user": "605c19163bac7310fb16aabb",
-                          "total": 20000,
-                          "biker": "605c19163bac7310fb16aabb",
-                          "items": items
-                        });
-                        print(json);
-                      }
+    return SafeArea(
+      child: Scaffold(
+          // appBar: AppBar(title: Text("Your Cart")),
+          body: Column(children: [
+        Container(
+          height: 55,
+          decoration: BoxDecoration(color: Cons.normal),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: InkWell(
+                    onTap: () {
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          '/home', (Route<dynamic> route) => false);
                     },
-                    style: TextButton.styleFrom(
-                        backgroundColor: Cons.normal,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(50)))),
-                    child: Text("Order Now",
-                        style: TextStyle(color: Cons.primary, fontSize: 20)))
-              ],
-            ),
-          )
-        ]));
+                    child: Icon(
+                      Icons.arrow_back,
+                      color: Cons.primary,
+                    )),
+              ),
+              Text("Your Cart",
+                  style: TextStyle(
+                      color: Cons.primary, fontFamily: "English", fontSize: 25)),
+              Text("")
+            ],
+          ),
+        ),
+        Expanded(
+            child: ListView.builder(
+                itemCount: Components.cartProducts.length,
+                itemBuilder: (context, index) =>
+                    _buildCartItem(Components.cartProducts[index]))),
+        Container(
+          height: 200,
+          decoration: BoxDecoration(
+              color: Cons.secondary,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(40), topRight: Radius.circular(40))),
+          child: Column(
+            children: [
+              SizedBox(height: 40),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Text("Sub Total", style: _getBigTextStyle(Cons.primary)),
+                  Text("${Components.getProductTotal()} Ks",
+                      style: _getBigTextStyle(Cons.normal))
+                ],
+              ),
+              SizedBox(height: 30),
+              TextButton(
+                  onPressed: () async {
+                    if (Cons.user == null) {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Login()));
+                    } else {
+                      var items = Components.genOrderProducts();
+                      var json = jsonEncode({"items": items});
+                      print(json);
+                      bool bol = await Api.orderUpload(json: json);
+                      if (bol) {
+                        Components.cartProducts = [];
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                            '/home', (Route<dynamic> route) => false);
+                      }
+                    }
+                  },
+                  style: TextButton.styleFrom(
+                      backgroundColor: Cons.normal,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(50)))),
+                  child: Text("Order Now",
+                      style: TextStyle(color: Cons.primary, fontSize: 20)))
+            ],
+          ),
+        )
+      ])),
+    );
   }
 
   Widget _buildCartItem(Product product) {
