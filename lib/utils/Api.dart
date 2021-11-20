@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:shop/models/Category.dart';
+import 'package:shop/models/History.dart';
 import 'package:shop/models/Product.dart';
 import 'package:shop/models/Tag.dart';
 import 'package:shop/models/User.dart';
@@ -97,6 +98,20 @@ class Api {
       return true;
     } else {
       print(responseData["msg"]);
+      return false;
+    }
+  }
+
+  static Future<bool> getHistories() async {
+    Uri uri = Uri.parse("${Cons.API_URL}/orders");
+    var response = await http.get(uri, headers: Cons.tokenHeader);
+    var responseData = jsonDecode(response.body);
+    if (responseData["con"]) {
+      List lisy = responseData["result"] as List;
+      Cons.histories = lisy.map((e) => History.fromJson(e)).toList();
+      return true;
+    } else {
+      Cons.errMsg = responseData["msg"];
       return false;
     }
   }
