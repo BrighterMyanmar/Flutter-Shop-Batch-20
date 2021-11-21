@@ -15,6 +15,9 @@ class Cons {
   static const String BASE_URL = "http://13.214.58.126:3000";
   static const String API_URL = "$BASE_URL/api";
 
+  static const String SAMPLE_TEXT =
+      "သီဟိုဠ်မှ ဉာဏ်ကြီးရှင်သည် အာယုဝဍ္ဎနဆေးညွှန်းစာကို ဇလွန်ဈေးဘေး ဗာဒံပင်ထက် အဓိဋ္ဌာန်လျက် ဂဃနဏဖတ်ခဲ့သည်။";
+
   static List<Category>? cats;
   static List<Tag>? tags;
   static User? user;

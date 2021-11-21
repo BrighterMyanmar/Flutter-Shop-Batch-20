@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shop/models/Category.dart';
 import 'package:shop/models/Product.dart';
 import 'package:shop/models/Tag.dart';
+import 'package:shop/pages/Chat.dart';
 import 'package:shop/pages/HistoryPage.dart';
 import 'package:shop/pages/Login.dart';
 import 'package:shop/pages/PreviewPage.dart';
@@ -67,6 +68,17 @@ class _ProductPageState extends State<ProductPage> {
         appBar: AppBar(
           title: Text("${cat?.name}"),
           actions: [
+            InkWell(
+                onTap: () {
+                  if (Cons.user?.token != null) {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Chat()));
+                  } else {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Login()));
+                  }
+                },
+                child: Icon(Icons.chat, color: Cons.accent, size: 37)),
             InkWell(
                 onTap: () {
                   if (Cons.user?.token != null) {
