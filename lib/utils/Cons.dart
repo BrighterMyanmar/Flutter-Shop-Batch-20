@@ -14,6 +14,7 @@ class Cons {
   static const Color transparentYellow = Color.fromRGBO(253, 184, 70, 0.7);
   static const String BASE_URL = "http://13.214.58.126:3000";
   static const String API_URL = "$BASE_URL/api";
+  static const String SHOP_ID = "610fd68647b7a33ec0ea5d10";
 
   static const String SAMPLE_TEXT =
       "သီဟိုဠ်မှ ဉာဏ်ကြီးရှင်သည် အာယုဝဍ္ဎနဆေးညွှန်းစာကို ဇလွန်ဈေးဘေး ဗာဒံပင်ထက် အဓိဋ္ဌာန်လျက် ဂဃနဏဖတ်ခဲ့သည်။";

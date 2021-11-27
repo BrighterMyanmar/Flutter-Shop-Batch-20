@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shop/helpers/TrianglePainter.dart';
 import 'package:shop/pages/Register.dart';
 import 'package:shop/utils/Api.dart';
+import 'package:shop/utils/Components.dart';
 import 'package:shop/utils/Cons.dart';
 
 class Login extends StatefulWidget {
@@ -149,9 +150,9 @@ class _LoginState extends State<Login> {
                                           "phone": phone,
                                           "password": password
                                         });
-                                        print(json);
                                         bool bol = await Api.login(json: json);
                                         if (bol) {
+                                          Components.getSocket();
                                           Navigator.pop(context);
                                         }
                                       }
