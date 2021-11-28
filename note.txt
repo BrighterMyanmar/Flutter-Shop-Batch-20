@@ -1,0 +1,4 @@
+-> Flutter Launcher Icon
+flutter pub run flutter_launcher_icons:main
+-> Flutter buil apk
+   -> fullter build apk --build-name=1.0
