@@ -1,7 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:shop/models/Message.dart';
 import 'package:shop/utils/Components.dart';
 import 'package:shop/utils/Cons.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
 
 class Chat extends StatefulWidget {
   const Chat({Key? key}) : super(key: key);
@@ -13,16 +17,27 @@ class Chat extends StatefulWidget {
 class _ChatState extends State<Chat> {
   var _scaffoldKey = GlobalKey<ScaffoldState>();
   var _messageController = TextEditingController();
-
+  final ImagePicker _picker = ImagePicker();
+  ScrollController _scrollController = ScrollController(initialScrollOffset: 0);
+  File? file;
   List<Message> chats = [];
 
   _invokeSocket() {
+    Components.socket?.emit('load-more', "");
     Components.socket?.on("message", (data) {
       Message msg = Message.fromJson(data);
       chats.add(msg);
       setState(() {
-        print(msg.from.name);
+        _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent + 200,
+            duration: Duration(seconds: 1),
+            curve: Curves.fastOutSlowIn);
       });
+    });
+    Components.socket?.on("messages", (data) {
+      List lisy = data as List;
+      chats = lisy.map((e) => Message.fromJson(e)).toList();
+      setState(() {});
     });
   }
 
@@ -52,6 +67,7 @@ class _ChatState extends State<Chat> {
           children: [
             Expanded(
                 child: ListView.builder(
+                    controller: _scrollController,
                     itemCount: chats.length,
                     itemBuilder: (context, index) {
                       Message chat = chats[index];
@@ -79,7 +95,9 @@ class _ChatState extends State<Chat> {
       height: 55,
       color: Cons.normal,
       child: Row(children: [
-        Icon(Icons.upload_file, size: 45, color: Cons.primary),
+        InkWell(
+            onTap: () => _getImage(),
+            child: Icon(Icons.upload_file, size: 45, color: Cons.primary)),
         Expanded(
             child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 10),
@@ -105,6 +123,7 @@ class _ChatState extends State<Chat> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Container(
+          width: boxWidth,
           margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           padding: EdgeInsets.all(10),
           decoration: BoxDecoration(
@@ -120,16 +139,22 @@ class _ChatState extends State<Chat> {
   }
 
   _makeLeftImage(imgLink, boxWidth) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-          color: Cons.normal,
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(25),
-              topRight: Radius.circular(25),
-              bottomLeft: Radius.circular(25))),
-      child: Image.network(imgLink, scale: 3.5),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Container(
+          width: boxWidth,
+          margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          padding: EdgeInsets.all(1),
+          decoration: BoxDecoration(
+              color: Cons.normal,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(25),
+                  topRight: Radius.circular(25),
+                  bottomLeft: Radius.circular(25))),
+          child: Image.network(imgLink, scale: 1.2),
+        ),
+      ],
     );
   }
 
@@ -222,5 +247,30 @@ class _ChatState extends State<Chat> {
             color: Cons.normal,
             fontWeight: FontWeight.bold,
             fontFamily: "English"));
+  }
+
+  Future _getImage() async {
+    final result = await _picker.pickImage(source: ImageSource.gallery);
+    if (result != null) {
+      print("${result.path}");
+      file = File(result.path);
+      _uploadImage();
+    }
+  }
+
+  _uploadImage() async {
+    var galleryUrl = Uri.parse("${Cons.BASE_URL}/api/imageupload");
+    http.MultipartRequest request = http.MultipartRequest('POST', galleryUrl);
+    http.MultipartFile multipartFile =
+        await http.MultipartFile.fromPath("image", file?.path ?? "");
+    request.files.add(multipartFile);
+    request.headers["Authorization"] = "Bearer ${Cons.user?.token}";
+
+    await request.send().then((response) async {
+      response.stream.transform(utf8.decoder).listen((value) {
+        var resData = jsonDecode(value);
+        _emitMessage(resData["msg"], "image");
+      });
+    });
   }
 }
